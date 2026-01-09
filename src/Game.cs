@@ -5,12 +5,13 @@ class Game
 {
 	// Private fields
 	private Parser parser;
-	private Room currentRoom;
+	private Player player;
 
 	// Constructor
 	public Game()
 	{
 		parser = new Parser();
+		player = new Player();
 		CreateRooms();
 	}
 
@@ -48,7 +49,7 @@ class Game
 		// ...
 
 		// Start game outside
-		currentRoom = outside;
+		player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -63,6 +64,13 @@ class Game
 		{
 			Command command = parser.GetCommand();
 			finished = ProcessCommand(command);
+
+			if (!player.IsAlive())
+			{
+				finished = true;
+				Console.WriteLine("dead.");
+				Console.WriteLine();
+			}
 		}
 		Console.WriteLine("Thank you for playing.");
 		Console.WriteLine("Press [Enter] to continue.");
@@ -77,7 +85,7 @@ class Game
 		Console.WriteLine("Zuul is a new, incredibly boring adventure game.");
 		Console.WriteLine("Type 'help' if you need help.");
 		Console.WriteLine();
-		Console.WriteLine(currentRoom.GetLongDescription());
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	}
 
 	// Given a command, process (that is: execute) the command.
@@ -107,7 +115,10 @@ class Game
 			case "look":
 				LookCommand();
 				break;
-		}
+			case "status":
+				StatusHealth();
+				break;
+		}		
 
 		return wantToQuit;
 	}
@@ -141,18 +152,31 @@ class Game
 		string direction = command.SecondWord;
 
 		// Try to go to the next room.
-		Room nextRoom = currentRoom.GetExit(direction);
+		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
 			Console.WriteLine("There is no door to "+direction+"!");
 			return;
 		}
-
-		currentRoom = nextRoom;
-		Console.WriteLine(currentRoom.GetLongDescription());
+		player.Damage(20);
+		player.CurrentRoom = nextRoom;
+		LookCommand();
 	}
 	private void LookCommand()
 	{
-		Console.WriteLine(currentRoom.GetLongDescription());
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
+	}
+
+	private void StatusHealth()
+	{
+		if(player.health <= 50)
+		{
+			Console.WriteLine("You have " + player.health + " HP left");
+			Console.WriteLine("I suggest finding some way to heal.");
+		}
+		else
+		{
+			Console.WriteLine("You have " + player.health + " HP left");
+		}
 	}
 }

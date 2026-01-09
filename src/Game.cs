@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 class Game
 {
@@ -22,6 +23,7 @@ class Game
 		Room pub = new Room("in the campus pub");
 		Room lab = new Room("in a computing lab");
 		Room office = new Room("in the computing admin office");
+		Room storageCloset = new Room("in the storage closet");
 
 		// Initialise room exits
 		outside.AddExit("east", theatre);
@@ -29,6 +31,7 @@ class Game
 		outside.AddExit("west", pub);
 
 		theatre.AddExit("west", outside);
+		theatre.AddExit("up", storageCloset);
 
 		pub.AddExit("east", outside);
 
@@ -36,6 +39,8 @@ class Game
 		lab.AddExit("east", office);
 
 		office.AddExit("west", lab);
+
+		storageCloset.AddExit("down", theatre);
 
 		// Create your Items here
 		// ...
@@ -99,6 +104,9 @@ class Game
 			case "quit":
 				wantToQuit = true;
 				break;
+			case "look":
+				LookCommand();
+				break;
 		}
 
 		return wantToQuit;
@@ -141,6 +149,10 @@ class Game
 		}
 
 		currentRoom = nextRoom;
+		Console.WriteLine(currentRoom.GetLongDescription());
+	}
+	private void LookCommand()
+	{
 		Console.WriteLine(currentRoom.GetLongDescription());
 	}
 }

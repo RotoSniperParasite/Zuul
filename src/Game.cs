@@ -6,6 +6,7 @@ class Game
 	// Private fields
 	private Parser parser;
 	private Player player;
+	public Item item;
 
 	// Constructor
 	public Game()
@@ -43,13 +44,15 @@ class Game
 
 		storageCloset.AddExit("down", theatre);
 
-		// Create your Items here
-		// ...
-		// And add them to the Rooms
-		// ...
+        // Create your Items here
 
-		// Start game outside
-		player.CurrentRoom = outside;
+        Item sword = new(3, "an old sword");
+		Item apple = new(1, "a beautiful and delicious apple");
+        // And add them to the Rooms
+        // ...
+
+        // Start game outside
+        player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.

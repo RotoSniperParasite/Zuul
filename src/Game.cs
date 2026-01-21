@@ -7,6 +7,7 @@ class Game
 	private Parser parser;
 	private Player player;
 	public Item item;
+	public Inventory inventory;
 
 	// Constructor
 	public Game()
@@ -46,8 +47,8 @@ class Game
 
         // Create your Items here
 
-        Item sword = new(3, "an old sword");
-		Item apple = new(1, "a beautiful and delicious apple");
+        Item sword = new Item(3, "a sword");
+		Item apple = new Item(1, "an apple");
         // And add them to the Rooms
         // ...
 
@@ -72,7 +73,6 @@ class Game
 			{
 				finished = true;
 				Console.WriteLine("dead.");
-				Console.WriteLine();
 			}
 		}
 		Console.WriteLine("Thank you for playing.");

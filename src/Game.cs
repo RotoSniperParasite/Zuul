@@ -9,6 +9,7 @@ class Game
 	public Item item;
 	public Inventory inventory;
 
+
 	// Constructor
 	public Game()
 	{
@@ -45,15 +46,17 @@ class Game
 
 		storageCloset.AddExit("down", theatre);
 
-        // Create your Items here
+		// Create your Items here
 
-        Item sword = new Item(3, "a sword");
-		Item apple = new Item(1, "an apple");
-        // And add them to the Rooms
-        // ...
+		Item sword = new Item(3, "sword");
+		Item apple = new Item(1, "apple");
+		// And add them to the Rooms
+		// ...
+		outside.Chest.Put("sword", sword);
+		outside.Chest.Put("apple", apple);
 
-        // Start game outside
-        player.CurrentRoom = outside;
+		// Start game outside
+		player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -98,7 +101,7 @@ class Game
 	{
 		bool wantToQuit = false;
 
-		if(command.IsUnknown())
+		if (command.IsUnknown())
 		{
 			Console.WriteLine("I don't know what you mean...");
 			return wantToQuit; // false
@@ -121,7 +124,7 @@ class Game
 			case "status":
 				StatusHealth();
 				break;
-		}		
+		}
 
 		return wantToQuit;
 	}
@@ -129,7 +132,7 @@ class Game
 	// ######################################
 	// implementations of user commands:
 	// ######################################
-	
+
 	// Print out some help information.
 	// Here we print the mission and a list of the command words.
 	private void PrintHelp()
@@ -145,7 +148,7 @@ class Game
 	// room, otherwise print an error message.
 	private void GoRoom(Command command)
 	{
-		if(!command.HasSecondWord())
+		if (!command.HasSecondWord())
 		{
 			// if there is no second word, we don't know where to go...
 			Console.WriteLine("Go where?");
@@ -158,7 +161,7 @@ class Game
 		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
-			Console.WriteLine("There is no door to "+direction+"!");
+			Console.WriteLine("There is no door to " + direction + "!");
 			return;
 		}
 		player.Damage(20);
@@ -169,10 +172,9 @@ class Game
 	{
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	}
-
 	private void StatusHealth()
 	{
-		if(player.health <= 50)
+		if (player.health <= 50)
 		{
 			Console.WriteLine("You have " + player.health + " HP left");
 			Console.WriteLine("I suggest finding some way to heal.");
@@ -181,5 +183,8 @@ class Game
 		{
 			Console.WriteLine("You have " + player.health + " HP left");
 		}
+		Console.WriteLine();
+		Console.WriteLine("Inventory:");
+		Console.WriteLine(player.ShowInventoryBackpack());
 	}
 }

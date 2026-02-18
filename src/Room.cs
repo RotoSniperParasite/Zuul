@@ -33,7 +33,7 @@ class Room
 	{
 		return description;
 	}
-
+	
 	// Return a long description of this room, in the form:
 	//     You are in the kitchen.
 	//     Exits: north, west

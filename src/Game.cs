@@ -22,41 +22,31 @@ class Game
 	private void CreateRooms()
 	{
 		// Create the rooms
-		Room outside = new Room("outside the main entrance of the university");
-		Room theatre = new Room("in a lecture theatre");
-		Room pub = new Room("in the campus pub");
-		Room lab = new Room("in a computing lab");
-		Room office = new Room("in the computing admin office");
-		Room storageCloset = new Room("in the storage closet");
+		Room attic = new Room("in a dusty, old attic. Various boxes are covered in dust and cobwebs.\nYou notice a sizeable hole in the floor");
+		Room eastwing_2_f1 = new Room("in a hallway with a Victorian Era-esque interior");
+		Room eastwing_1_f1 = new Room("walking down the hall");
+		Room centralhall_1_f1 = new Room("inside the main hall, various paintings cover the wall");
+		Room centralhall_2_f1 = new Room("walking down the hall and notice a flight of stairs");
+		Room centralhall_1_ground = new Room("on the ground floor now after walking down the stairs");
 
-		// Initialise room exits
-		outside.AddExit("east", theatre);
-		outside.AddExit("south", lab);
-		outside.AddExit("west", pub);
-
-		theatre.AddExit("west", outside);
-		theatre.AddExit("up", storageCloset);
-
-		pub.AddExit("east", outside);
-
-		lab.AddExit("north", outside);
-		lab.AddExit("east", office);
-
-		office.AddExit("west", lab);
-
-		storageCloset.AddExit("down", theatre);
+		attic.AddExit("down", eastwing_2_f1);
+		eastwing_2_f1.AddExit("south", eastwing_1_f1);
+		eastwing_1_f1.AddExit("north", eastwing_2_f1);
+		eastwing_1_f1.AddExit("west", centralhall_1_f1);
+		centralhall_1_f1.AddExit("east", eastwing_1_f1);
+		centralhall_1_f1.AddExit("north", centralhall_2_f1);
+		centralhall_2_f1.AddExit("south", centralhall_1_f1);
+		centralhall_2_f1.AddExit("down", centralhall_1_ground);
 
 		// Create your Items here
 
-		Item sword = new Item(3, "sword");
-		Item apple = new Item(1, "apple");
+		Item Evil_Ring = new Item(1, "inconspicuous_ring");
 		// And add them to the Rooms
 		// ...
-		outside.Chest.Put("sword", sword);
-		outside.Chest.Put("apple", apple);
+		attic.Chest.Put("inconspicuous_ring", Evil_Ring);
 
 		// Start game outside
-		player.CurrentRoom = outside;
+		player.CurrentRoom = attic;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -75,7 +65,7 @@ class Game
 			if (!player.IsAlive())
 			{
 				finished = true;
-				Console.WriteLine("dead.");
+				Console.WriteLine("You died, how sad.");
 			}
 		}
 		Console.WriteLine("Thank you for playing.");
@@ -120,9 +110,21 @@ class Game
 				break;
 			case "look":
 				LookCommand();
+				Console.WriteLine();
+				Console.WriteLine("These items are currently in the room:");
+				player.CurrentRoom.Chest.Show();
 				break;
 			case "status":
 				StatusHealth();
+				break;
+			case "drop":
+				Drop(command);
+				break;
+			case "take":
+				Take(command);
+				break;
+			case "use":
+				UseItem(command);
 				break;
 		}
 
@@ -185,6 +187,55 @@ class Game
 		}
 		Console.WriteLine();
 		Console.WriteLine("Inventory:");
-		Console.WriteLine(player.ShowInventoryBackpack());
+		player.ShowInventory();
+	}
+	private void Drop(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Drop what?");
+			return;
+		}
+		else
+		{
+			string itemName = command.SecondWord;
+			player.DropToChest(itemName);
+
+		}
+	}
+	private void Take(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Take what?");
+			return;
+		}
+		else
+		{
+			string itemName = command.SecondWord;
+			player.TakeFromChest(itemName);
+		}
+	}
+	public void UseItem(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Use what?"); 
+			return;
+		}
+		string itemName = command.SecondWord;
+
+		Item item = player.Backpack.Get(itemName); 
+		
+		if (item != null)
+		{
+			player.Use(itemName, command);
+		}
+		else
+		{
+			Console.WriteLine("You don't have a " + itemName + ".");
+		}
 	}
 }
+
+

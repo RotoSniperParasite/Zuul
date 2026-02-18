@@ -26,7 +26,7 @@ class Inventory
     }
     public bool Put(string itemName, Item item)
     {
-        if (FreeWeight() <= item.Weight)
+        if (FreeWeight() >= item.Weight)
         {
             items.Add(itemName, item);
             return true;
@@ -49,16 +49,16 @@ class Inventory
             return null;
         }
     }
-    public string Show()
+    public void Show()
     {
-        Console.WriteLine("you have " + FreeWeight() + "kg (kilogram for less smart people) left in your backpack.");
         if (items.Count == 0)
         {
-            return "There are no items in your Inventory.";
+            Console.WriteLine("There are no items.");
+            return;
         }
-        else
+        foreach (var key in items.Keys)
         {
-            return string.Join(", ", items.Keys);
-        }
+           Console.WriteLine(key);
+        } 
     }
 }

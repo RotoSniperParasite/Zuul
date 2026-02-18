@@ -1,3 +1,5 @@
+using System.Collections;
+
 class Player
 {
     // auto property
@@ -6,7 +8,10 @@ class Player
     // fields
     public int health;
     private Inventory backpack;
-
+    public Inventory Backpack
+    {
+        get { return backpack; }
+    }
     // constructor
     public Player()
     {
@@ -30,37 +35,40 @@ class Player
 
     public bool IsAlive()
     {
-        if (this.health == 0)
+        if (this.health <= 0)
         {
             return false;
         }
         return true;
     }
-    public string ShowInventoryBackpack()
+    public void ShowInventory()
     {
-        return backpack.Show();
+        backpack.Show();
     }
 
     public bool TakeFromChest(string itemName)
     {
         Item item = CurrentRoom.Chest.Get(itemName);
-        if (backpack.FreeWeight() >= item.Weight)
+        if (item == null)
         {
-            backpack.Put(itemName, item);
-            Console.WriteLine("The " + itemName + "slides into the backpack");
+            Console.WriteLine("take what?");
+            return false;
+        }
+        if (backpack.Put(itemName, item))
+        {
+            Console.WriteLine("The " + itemName + " slides into the backpack");
             return true;
         }
         else
         {
-            Console.WriteLine($"The " + itemName + " doesn't fit.");
+            Console.WriteLine("The " + itemName + " doesn't fit.");
             return false;
         }
-
     }
     public bool DropToChest(string itemName)
     {
         Item item = backpack.Get(itemName);
-        if(item == null)
+        if (item != null)
         {
             CurrentRoom.Chest.Put(itemName, item);
             Console.WriteLine("You gently lay down the " + itemName + ".");
@@ -68,8 +76,18 @@ class Player
         }
         else
         {
-            Console.WriteLine("You don't have a(an) " + itemName + "in your backpack.");
+            Console.WriteLine("You don't have a(an) " + itemName + " in your backpack.");
             return false;
+        }
+    }
+    public void Use(string itemName, Command command)
+    {
+        switch (itemName)
+        {
+            case "inconspicuous_ring":
+            Console.WriteLine("You put on the ring and are immediately overwhelmed by its energy that you start to burst at the seams.");
+            Damage(9999999);
+            break;
         }
     }
 }
